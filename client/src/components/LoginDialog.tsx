@@ -145,7 +145,7 @@ export default function LoginDialog() {
   const [avatarIndex, setAvatarIndex] = useState<number>(0)
   const [nameFieldEmpty, setNameFieldEmpty] = useState<boolean>(false)
   const dispatch = useAppDispatch()
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  // const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
   const roomName = useAppSelector((state) => state.room.roomName)
   const roomDescription = useAppSelector((state) => state.room.roomDescription)
@@ -227,7 +227,7 @@ export default function LoginDialog() {
             </Warning>
           )} */}
 
-          {videoConnected && (
+          {/* {videoConnected && */(
             <Warning>
               <Alert variant="outlined">Webcam connected!</Alert>
             </Warning>

@@ -22,7 +22,7 @@ function App() {
   const loggedIn = useAppSelector((state) => state.user.loggedIn)
   const computerDialogOpen = useAppSelector((state) => state.computer.computerDialogOpen)
   const whiteboardDialogOpen = useAppSelector((state) => state.whiteboard.whiteboardDialogOpen)
-  const videoConnected = useAppSelector((state) => state.user.videoConnected)
+  // const videoConnected = useAppSelector((state) => state.user.videoConnected)
   const roomJoined = useAppSelector((state) => state.room.roomJoined)
 
   let ui: JSX.Element
@@ -39,7 +39,7 @@ function App() {
         <>
           <Chat />
           {/* Render VideoConnectionDialog if user is not connected to a webcam. */}
-          {!videoConnected && <VideoConnectionDialog />}
+          {/* {!videoConnected && <VideoConnectionDialog />} */}
           <MobileVirtualJoystick />
         </>
       )
