@@ -12,7 +12,11 @@ import { SkyOffice } from './rooms/SkyOffice'
 const port = Number(process.env.PORT || 2567)
 const app = express()
 
-app.use(cors())
+// app.use(cors({}));
+app.use(cors({
+  origin: '*'
+}));
+
 app.use(express.json())
 // app.use(express.static('dist'))
 

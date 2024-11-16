@@ -31,12 +31,23 @@ export default class Network {
   mySessionId!: string
 
   constructor() {
-    const protocol = window.location.protocol.replace('http', 'ws')
+    // const protocol = window.location.protocol.replace('http', 'ws')
+    // const endpoint =
+    //   process.env.NODE_ENV === 'production'
+    //     ? import.meta.env.VITE_SERVER_URL
+    //     : `${protocol}//${window.location.hostname}:2567`
+    
+    //배포 추가 코드
+    // Replace 'http' with 'wss' for a secure WebSocket connection over HTTPS
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    // Set the endpoint for production and development environments
     const endpoint =
       process.env.NODE_ENV === 'production'
-        ? import.meta.env.VITE_SERVER_URL
-        : `${protocol}//${window.location.hostname}:2567`
-    this.client = new Client(endpoint)
+        ? import.meta.env.VITE_SERVER_URL || 'wss://13.124.171.11'
+        : `${protocol}//13.124.171.11:2567`; // Use a fixed IP with a secure protocol
+    //배포 추가 코드
+
+        this.client = new Client(endpoint)
     this.joinLobbyRoom().then(() => {
       store.dispatch(setLobbyJoined(true))
     })
@@ -142,7 +153,7 @@ export default class Network {
       store.dispatch(pushPlayerLeftMessage(player.name))
       store.dispatch(removePlayerNameMap(key))
     }
-//컴퓨터 추가
+    //컴퓨터 추가
     // // new instance added to the computers MapSchema
     // this.room.state.computers.onAdd = (computer: IComputer, key: string) => {
     //   // track changes on every child object's connectedUser
@@ -174,9 +185,9 @@ export default class Network {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER);
       };
     };
-  
-//컴퓨터 추가
-//화이트보드 추가
+
+    //컴퓨터 추가
+    //화이트보드 추가
     // // new instance added to the whiteboards MapSchema
     // this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
     //   store.dispatch(
@@ -205,7 +216,7 @@ export default class Network {
       } else {
         console.warn(`No predefined URL found for whiteboard ID: ${key}`);
       }
-    
+
       // Track changes on connected users
       whiteboard.connectedUser.onAdd = (item, index) => {
         phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD);
@@ -214,8 +225,8 @@ export default class Network {
         phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD);
       };
     };
-    
-//화이트보드 추가
+
+    //화이트보드 추가
 
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
