@@ -42,5 +42,10 @@ gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 // register colyseus monitor AFTER registering your room handlers
 app.use('/colyseus', monitor())
 
-gameServer.listen(port)
-console.log(`Listening on ws://localhost:${port}`)
+// 로컬호스트로 돌릴 시 코드
+// gameServer.listen(port);
+// console.log(`Listening on ws://localhost:${port}`);
+
+gameServer.listen(port, '0.0.0.0');
+console.log(`Listening on ws://0.0.0.0:${port}`);
+console.log(`Server accessible via ws://13.124.171.11:${port}`);
