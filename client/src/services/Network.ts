@@ -3,7 +3,7 @@ import { IComputer, IOfficeState, IPlayer, IWhiteboard } from '../../../types/IO
 import { Message } from '../../../types/Messages'
 import { IRoomData, RoomType } from '../../../types/Rooms'
 import { ItemType } from '../../../types/Items'
-import WebRTC from '../web/WebRTC'
+// import WebRTC from '../web/WebRTC'
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
 import { setSessionId, setPlayerNameMap, removePlayerNameMap } from '../stores/UserStore'
@@ -20,12 +20,13 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+import { setComputerUrls } from '../stores/ComputerStore';
 
 export default class Network {
   private client: Client
   private room?: Room<IOfficeState>
   private lobby!: Room
-  webRTC?: WebRTC
+  // webRTC?: WebRTC
 
   mySessionId!: string
 
@@ -42,9 +43,24 @@ export default class Network {
 
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
-    phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
+    // phaserEvents.on(Event.PLAYER_DISCONNECTED, this.playerStreamDisconnect, this)
   }
-
+  //화이트보드 코드 추가
+  private predefinedUrls = new Map<string, string>([
+    ['0', 'https://www.youtube.com/embed/ZN4BgFRCr6I/'],
+    ['1', 'https://www.naver.com/'],
+    ['2', 'https://www.google.com/'],
+    ['3', 'https://www.youtube.com/embed/r5gRTDIECEQ'],
+  ]);
+  //화이트보드 코드 추가
+  //컴퓨터 코드 추가
+  private predefinedComputerUrls = new Map<string, string>([
+    ['0', 'https://www.youtube.com/embed/ZN4BgFRCr6I/'],
+    ['1', 'https://www.naver.com/'],
+    ['2', 'https://www.google.com/'],
+    ['3', 'https://www.youtube.com/embed/r5gRTDIECEQ'],
+  ]);
+  //컴퓨터 코드 추가
   /**
    * method to join Colyseus' built-in LobbyRoom, which automatically notifies
    * connected clients whenever rooms with "realtime listing" have updates
@@ -96,7 +112,7 @@ export default class Network {
     this.lobby.leave()
     this.mySessionId = this.room.sessionId
     store.dispatch(setSessionId(this.room.sessionId))
-    this.webRTC = new WebRTC(this.mySessionId, this)
+    // this.webRTC = new WebRTC(this.mySessionId, this)
 
     // new instance added to the players MapSchema
     this.room.state.players.onAdd = (player: IPlayer, key: string) => {
@@ -121,39 +137,85 @@ export default class Network {
     // an instance removed from the players MapSchema
     this.room.state.players.onRemove = (player: IPlayer, key: string) => {
       phaserEvents.emit(Event.PLAYER_LEFT, key)
-      this.webRTC?.deleteVideoStream(key)
-      this.webRTC?.deleteOnCalledVideoStream(key)
+      // this.webRTC?.deleteVideoStream(key)
+      // this.webRTC?.deleteOnCalledVideoStream(key)
       store.dispatch(pushPlayerLeftMessage(player.name))
       store.dispatch(removePlayerNameMap(key))
     }
-
-    // new instance added to the computers MapSchema
+//컴퓨터 추가
+    // // new instance added to the computers MapSchema
+    // this.room.state.computers.onAdd = (computer: IComputer, key: string) => {
+    //   // track changes on every child object's connectedUser
+    //   computer.connectedUser.onAdd = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.COMPUTER)
+    //   }
+    //   computer.connectedUser.onRemove = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER)
+    //   }
+    // }
     this.room.state.computers.onAdd = (computer: IComputer, key: string) => {
-      // track changes on every child object's connectedUser
-      computer.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.COMPUTER)
+      const url = this.predefinedComputerUrls.get(key);
+      if (url) {
+        store.dispatch(
+          setComputerUrls({
+            computerId: key,
+            url: url,
+          })
+        );
+      } else {
+        console.warn(`No predefined URL found for computer ID: ${key}`);
       }
-      computer.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER)
-      }
-    }
 
-    // new instance added to the whiteboards MapSchema
+      // Track changes on connected users (if necessary)
+      computer.connectedUser.onAdd = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.COMPUTER);
+      };
+      computer.connectedUser.onRemove = (item, index) => {
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.COMPUTER);
+      };
+    };
+  
+//컴퓨터 추가
+//화이트보드 추가
+    // // new instance added to the whiteboards MapSchema
+    // this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
+    //   store.dispatch(
+    //     setWhiteboardUrls({
+    //       whiteboardId: key,
+    //       roomId: whiteboard.roomId,
+    //     })
+    //   )
+    //   // track changes on every child object's connectedUser
+    //   whiteboard.connectedUser.onAdd = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD)
+    //   }
+    //   whiteboard.connectedUser.onRemove = (item, index) => {
+    //     phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD)
+    //   }
+    // }
     this.room.state.whiteboards.onAdd = (whiteboard: IWhiteboard, key: string) => {
-      store.dispatch(
-        setWhiteboardUrls({
-          whiteboardId: key,
-          roomId: whiteboard.roomId,
-        })
-      )
-      // track changes on every child object's connectedUser
+      const url = this.predefinedUrls.get(key);
+      if (url) {
+        store.dispatch(
+          setWhiteboardUrls({
+            whiteboardId: key,
+            url: url, // Use the predefined URL for the specific key
+          })
+        );
+      } else {
+        console.warn(`No predefined URL found for whiteboard ID: ${key}`);
+      }
+    
+      // Track changes on connected users
       whiteboard.connectedUser.onAdd = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD)
-      }
+        phaserEvents.emit(Event.ITEM_USER_ADDED, item, key, ItemType.WHITEBOARD);
+      };
       whiteboard.connectedUser.onRemove = (item, index) => {
-        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD)
-      }
-    }
+        phaserEvents.emit(Event.ITEM_USER_REMOVED, item, key, ItemType.WHITEBOARD);
+      };
+    };
+    
+//화이트보드 추가
 
     // new instance added to the chatMessages ArraySchema
     this.room.state.chatMessages.onAdd = (item, index) => {
@@ -170,16 +232,16 @@ export default class Network {
       phaserEvents.emit(Event.UPDATE_DIALOG_BUBBLE, clientId, content)
     })
 
-    // when a peer disconnects with myPeer
-    this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
-      this.webRTC?.deleteOnCalledVideoStream(clientId)
-    })
+    // // when a peer disconnects with myPeer
+    // this.room.onMessage(Message.DISCONNECT_STREAM, (clientId: string) => {
+    //   this.webRTC?.deleteOnCalledVideoStream(clientId)
+    // })
 
-    // when a computer user stops sharing screen
-    this.room.onMessage(Message.STOP_SCREEN_SHARE, (clientId: string) => {
-      const computerState = store.getState().computer
-      computerState.shareScreenManager?.onUserLeft(clientId)
-    })
+    // // when a computer user stops sharing screen
+    // this.room.onMessage(Message.STOP_SCREEN_SHARE, (clientId: string) => {
+    //   const computerState = store.getState().computer
+    //   computerState.shareScreenManager?.onUserLeft(clientId)
+    // })
   }
 
   // method to register event listener and call back function when a item user added
@@ -247,17 +309,17 @@ export default class Network {
     phaserEvents.emit(Event.MY_PLAYER_READY)
   }
 
-  // method to send ready-to-connect signal to Colyseus server
-  videoConnected() {
-    this.room?.send(Message.VIDEO_CONNECTED)
-    phaserEvents.emit(Event.MY_PLAYER_VIDEO_CONNECTED)
-  }
+  // // method to send ready-to-connect signal to Colyseus server
+  // videoConnected() {
+  //   this.room?.send(Message.VIDEO_CONNECTED)
+  //   phaserEvents.emit(Event.MY_PLAYER_VIDEO_CONNECTED)
+  // }
 
-  // method to send stream-disconnection signal to Colyseus server
-  playerStreamDisconnect(id: string) {
-    this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
-    this.webRTC?.deleteVideoStream(id)
-  }
+  // // method to send stream-disconnection signal to Colyseus server
+  // playerStreamDisconnect(id: string) {
+  //   this.room?.send(Message.DISCONNECT_STREAM, { clientId: id })
+  //   this.webRTC?.deleteVideoStream(id)
+  // }
 
   connectToComputer(id: string) {
     this.room?.send(Message.CONNECT_TO_COMPUTER, { computerId: id })
@@ -275,9 +337,9 @@ export default class Network {
     this.room?.send(Message.DISCONNECT_FROM_WHITEBOARD, { whiteboardId: id })
   }
 
-  onStopScreenShare(id: string) {
-    this.room?.send(Message.STOP_SCREEN_SHARE, { computerId: id })
-  }
+  // onStopScreenShare(id: string) {
+  //   this.room?.send(Message.STOP_SCREEN_SHARE, { computerId: id })
+  // }
 
   addChatMessage(content: string) {
     this.room?.send(Message.ADD_CHAT_MESSAGE, { content: content })

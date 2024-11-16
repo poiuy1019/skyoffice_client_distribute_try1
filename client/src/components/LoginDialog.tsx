@@ -209,7 +209,7 @@ export default function LoginDialog() {
               setName((e.target as HTMLInputElement).value)
             }}
           />
-          {!videoConnected && (
+          {/* {!videoConnected && (
             <Warning>
               <Alert variant="outlined" severity="warning">
                 <AlertTitle>Warning</AlertTitle>
@@ -225,7 +225,7 @@ export default function LoginDialog() {
                 Connect Webcam
               </Button>
             </Warning>
-          )}
+          )} */}
 
           {videoConnected && (
             <Warning>

@@ -27,7 +27,7 @@ export default function VideoConnectionDialog() {
   return (
     <Backdrop>
       <Wrapper>
-        {connectionWarning && (
+        {/* {connectionWarning && (
           <Alert
             severity="warning"
             onClose={() => {
@@ -38,8 +38,8 @@ export default function VideoConnectionDialog() {
             No webcam connected
             <br /> <strong>connect one for full experience!</strong>
           </Alert>
-        )}
-        <Button
+        )} */}
+        {/* <Button
           variant="contained"
           color="secondary"
           onClick={() => {
@@ -48,7 +48,7 @@ export default function VideoConnectionDialog() {
           }}
         >
           Connect Webcam
-        </Button>
+        </Button> */}
       </Wrapper>
     </Backdrop>
   )

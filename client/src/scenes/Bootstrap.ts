@@ -32,6 +32,12 @@ export default class Bootstrap extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     })
+    //내가 추가한 코드
+    this.load.spritesheet('school', 'assets/tileset/Classroom_and_library.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    })
+    //내가 추가한 코드
     this.load.spritesheet('chairs', 'assets/items/chair.png', {
       frameWidth: 32,
       frameHeight: 64,

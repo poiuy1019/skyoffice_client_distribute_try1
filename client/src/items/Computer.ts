@@ -7,7 +7,6 @@ import { openComputerDialog } from '../stores/ComputerStore'
 export default class Computer extends Item {
   id?: string
   currentUsers = new Set<string>()
-
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
     super(scene, x, y, texture, frame)
 
@@ -33,29 +32,46 @@ export default class Computer extends Item {
     }
   }
 
+  // addCurrentUser(userId: string) {
+  //   if (!this.currentUsers || this.currentUsers.has(userId)) return
+  //   this.currentUsers.add(userId)
+  //   const computerState = store.getState().computer
+  //   if (computerState.computerId === this.id) {
+  //     computerState.shareScreenManager?.onUserJoined(userId)
+  //   }
+  //   this.updateStatus()
+  // }
   addCurrentUser(userId: string) {
-    if (!this.currentUsers || this.currentUsers.has(userId)) return
-    this.currentUsers.add(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserJoined(userId)
-    }
-    this.updateStatus()
+    if (!this.currentUsers || this.currentUsers.has(userId)) return;
+    this.currentUsers.add(userId);
+    this.updateStatus();
   }
 
+  // removeCurrentUser(userId: string) {
+  //   if (!this.currentUsers || !this.currentUsers.has(userId)) return
+  //   this.currentUsers.delete(userId)
+  //   const computerState = store.getState().computer
+  //   if (computerState.computerId === this.id) {
+  //     computerState.shareScreenManager?.onUserLeft(userId)
+  //   }
+  //   this.updateStatus()
+  // }
   removeCurrentUser(userId: string) {
-    if (!this.currentUsers || !this.currentUsers.has(userId)) return
-    this.currentUsers.delete(userId)
-    const computerState = store.getState().computer
-    if (computerState.computerId === this.id) {
-      computerState.shareScreenManager?.onUserLeft(userId)
-    }
-    this.updateStatus()
+    if (!this.currentUsers || !this.currentUsers.has(userId)) return;
+    this.currentUsers.delete(userId);
+    this.updateStatus();
   }
+
+  //   openDialog(playerId: string, network: Network) {
+  //     if (!this.id) return
+  //     store.dispatch(openComputerDialog({ computerId: this.id, myUserId: playerId }))
+  //     network.connectToComputer(this.id)
+  //   }
+  // }
 
   openDialog(playerId: string, network: Network) {
-    if (!this.id) return
-    store.dispatch(openComputerDialog({ computerId: this.id, myUserId: playerId }))
-    network.connectToComputer(this.id)
+    if (!this.id) return;
+    store.dispatch(openComputerDialog({ computerId: this.id })); // Simplified to remove unnecessary parameters
+    network.connectToComputer(this.id);
   }
 }

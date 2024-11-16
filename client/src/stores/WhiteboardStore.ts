@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 import phaserGame from '../PhaserGame'
 import Game from '../scenes/Game'
 
@@ -37,12 +36,19 @@ export const whiteboardSlice = createSlice({
       state.whiteboardId = null
       state.whiteboardUrl = null
     },
-    setWhiteboardUrls: (state, action: PayloadAction<{ whiteboardId: string; roomId: string }>) => {
-      state.urls.set(
-        action.payload.whiteboardId,
-        `https://wbo.ophir.dev/boards/sky-office-${action.payload.roomId}`
-      )
+    //화이트보드 url 코드
+    // setWhiteboardUrls: (state, action: PayloadAction<{ whiteboardId: string; roomId: string }>) => {
+    //   state.urls.set(
+    //     action.payload.whiteboardId,
+    //     `https://wbo.ophir.dev/boards/sky-office-${action.payload.roomId}`
+    //   )
+    // },
+    //수정 부분
+    setWhiteboardUrls: (state, action: PayloadAction<{ whiteboardId: string; url: string }>) => {
+      // Set the URL for the specific whiteboardId in the map
+      state.urls.set(action.payload.whiteboardId, action.payload.url);
     },
+    //수정 부분
   },
 })
 
