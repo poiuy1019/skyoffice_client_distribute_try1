@@ -47,5 +47,5 @@ app.use('/colyseus', monitor())
 // console.log(`Listening on ws://localhost:${port}`);
 
 gameServer.listen(port, '0.0.0.0');
-console.log(`Listening on ws://0.0.0.0:${port}`);
-console.log(`Server accessible via ws://13.124.171.11:${port}`);
+console.log(`Listening on https://0.0.0.0:${port}`);
+console.log(`Server accessible via https://13.124.171.11:${port}`);
