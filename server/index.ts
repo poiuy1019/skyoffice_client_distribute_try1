@@ -24,6 +24,24 @@ const gameServer = new Server({
   server,
 })
 
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Welcome to SkyOffice</title>
+      </head>
+      <body>
+        <h1>Welcome to SkyOffice!</h1>
+        <p>This is the homepage of the SkyOffice server. Navigate to <a href="/colyseus">/colyseus</a> for the Colyseus monitor or check <a href="/health">/health</a> for server health.</p>
+      </body>
+    </html>
+  `);
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).send('Server is healthy');
+});
+
 // register room handlers
 gameServer.define(RoomType.LOBBY, LobbyRoom)
 gameServer.define(RoomType.PUBLIC, SkyOffice, {
