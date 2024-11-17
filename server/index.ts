@@ -8,7 +8,7 @@ import fs from 'fs'; // Import fs for reading certificate files
 
 import { SkyOffice } from './rooms/SkyOffice'
 
-const port = Number(process.env.PORT || 2567)
+const port = Number(process.env.PORT || 8080)
 const app = express()
 
 // app.use(cors({}));
