@@ -2,4 +2,9 @@
 /dist
 node_modules
 /.DS_Store
-/server/lib
+/lib
+/.github
+.env
+.eslingtignore
+# server code
+/client

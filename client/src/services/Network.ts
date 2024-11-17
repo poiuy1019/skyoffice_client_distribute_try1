@@ -31,20 +31,20 @@ export default class Network {
   mySessionId!: string
 
   constructor() {
-    // const protocol = window.location.protocol.replace('http', 'ws')
-    // const endpoint =
-    //   process.env.NODE_ENV === 'production'
-    //     ? import.meta.env.VITE_SERVER_URL
-    //     : `${protocol}//${window.location.hostname}:2567`
-    
-    //배포 추가 코드
-    // Replace 'http' with 'wss' for a secure WebSocket connection over HTTPS
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    // Set the endpoint for production and development environments
+    const protocol = window.location.protocol.replace('http', 'ws')
     const endpoint =
       process.env.NODE_ENV === 'production'
-        ? import.meta.env.VITE_SERVER_URL || 'wss://13.124.171.11'
-        : `${protocol}//13.124.171.11:2567`; // Use a fixed IP with a secure protocol
+        ? import.meta.env.VITE_SERVER_URL
+        : `${protocol}//${window.location.hostname}:2567`
+    
+    //배포 추가 코드
+    // // Replace 'http' with 'wss' for a secure WebSocket connection over HTTPS
+    // const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    // // Set the endpoint for production and development environments
+    // const endpoint =
+    //   process.env.NODE_ENV === 'production'
+    //     ? import.meta.env.VITE_SERVER_URL || 'wss://13.124.171.11'
+    //     : `${protocol}//13.124.171.11:2567`; // Use a fixed IP with a secure protocol
     //배포 추가 코드
 
         this.client = new Client(endpoint)

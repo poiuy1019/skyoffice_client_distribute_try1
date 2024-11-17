@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "../lib",
     "target": "es6",
     "module": "commonjs",
     "strict": true,
@@ -11,5 +11,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["."]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "**/*.d.ts"]
 }
