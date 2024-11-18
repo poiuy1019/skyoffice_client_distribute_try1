@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cd server && ts-node-dev --project tsconfig.server.json --respawn --transpile-only index.ts",
     "heroku-postbuild": "yarn && cd types && yarn && cd ../server && tsc --project tsconfig.server.json",
-    "build": "cd server && tsc --project tsconfig.server.json",
+    "build": "cd client && yarn build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rmdir /s /q lib dist"
   },
