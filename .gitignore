@@ -6,4 +6,5 @@ node_modules
 /.github
 .env
 .eslingtignore
-/client
+# /client
+/server
